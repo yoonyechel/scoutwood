@@ -4,6 +4,14 @@
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
+    },
+    {
+      "source": "/m",
+      "destination": "/mobile.html"
+    },
+    {
+      "source": "/mobile",
+      "destination": "/mobile.html"
     }
   ]
 }

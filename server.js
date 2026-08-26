@@ -59,9 +59,10 @@ app.use('/images', express.static(path.join(process.cwd(), 'images')));
 // Explicit Root Route handler
 app.get('/', (req, res) => {
   const possiblePaths = [
+    path.join(__dirname, 'public', 'index.html'),
     path.join(__dirname, 'index.html'),
-    path.join(process.cwd(), 'index.html'),
-    path.join(__dirname, '..', 'index.html')
+    path.join(process.cwd(), 'public', 'index.html'),
+    path.join(process.cwd(), 'index.html')
   ];
   for (const p of possiblePaths) {
     if (fs.existsSync(p)) {
@@ -69,6 +70,22 @@ app.get('/', (req, res) => {
     }
   }
   res.sendFile(path.resolve('index.html'));
+});
+
+// Explicit Mobile Route handler (/m, /mobile, /mobile.html)
+app.get(['/m', '/mobile', '/mobile.html'], (req, res) => {
+  const possiblePaths = [
+    path.join(__dirname, 'public', 'mobile.html'),
+    path.join(__dirname, 'mobile.html'),
+    path.join(process.cwd(), 'public', 'mobile.html'),
+    path.join(process.cwd(), 'mobile.html')
+  ];
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      return res.sendFile(p);
+    }
+  }
+  res.redirect('/mobile.html');
 });
 
 // Active sessions for admin

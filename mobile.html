@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>스카우트 WOOD지역대 | 숲속 스카우트 인터랙티브 메인 웹</title>
-  <meta name="description" content="숲속 스카우트 스타일의 풀사이즈 일러스트 노드 기반 인터랙티브 홍보 웹사이트. 텐트, 모닥불, 배낭, 표지판, 마스코트를 클릭하고 WOOD지역대 모험에 동참하세요!">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>스카우트 WOOD지역대 모바일 | 숲속 스카우트 모바일 홈</title>
+  <meta name="description" content="스마트폰에 최적화된 한국스카우트 WOOD지역대 공식 모바일 웹. 지역대 소개, 활동 안내, 공지사항, 대원 모집 신청, 갤러리를 손쉽게 이용하세요!">
   
   <!-- Google Fonts: Jua & Gowun Dodum -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,147 +14,206 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Base and Mobile Stylesheets -->
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="mobile.css">
 
-  <!-- Smart Mobile Auto-Detection & Redirection -->
   <script>
+    // Desktop switch check
     (function() {
-      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent);
-      const isMobileScreen = window.innerWidth <= 768;
-      const isMobileDomain = window.location.hostname.startsWith('m.');
       const urlParams = new URLSearchParams(window.location.search);
-      const forceDesktop = urlParams.get('mode') === 'desktop';
-
-      if ((isMobileUA || isMobileScreen || isMobileDomain) && !forceDesktop) {
-        window.location.replace('/mobile.html' + window.location.search);
+      if (urlParams.get('mode') === 'desktop') {
+        window.location.replace('/?mode=desktop');
       }
     })();
   </script>
 </head>
 <body>
 
-  <!-- Sound & Ambient Header Bar -->
-  <header class="top-interactive-bar">
-    <div class="brand-badge">
-      <i class="fa-solid fa-tree"></i>
-      <span>한국스카우트 <b>WOOD지역대</b></span>
+  <div class="mobile-app-wrapper">
+    
+    <!-- Mobile App Header Bar (No bulky desktop menu pills!) -->
+    <header class="mobile-header-bar">
+      <a href="mobile.html" class="mobile-brand">
+        <i class="fa-solid fa-tree"></i>
+        <span>한국스카우트 <b>WOOD지역대</b></span>
+      </a>
+
+      <div class="mobile-header-actions">
+        <button id="audio-toggle-btn" class="mobile-icon-btn" onclick="toggleBgm()" title="숲속 BGM 재생/정지">
+          <i class="fa-solid fa-volume-xmark"></i>
+        </button>
+        <button id="sfx-toggle-btn" class="mobile-icon-btn" onclick="toggleSfx()" title="효과음 On/Off">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </button>
+        <button id="admin-portal-btn" class="mobile-icon-btn admin-btn" onclick="openAdminModal()" title="관리자 대시보드 열기">
+          <i class="fa-solid fa-user-shield"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Hero Banner -->
+    <section class="mobile-hero-section">
+      <div class="mobile-hero-card">
+        <img src="images/scout_hero.jpg" alt="WOOD지역대 스카우트 모험" class="mobile-hero-img">
+        <div class="mobile-hero-overlay">
+          <span class="mobile-hero-badge">🌲 한국스카우트 경기남부연맹 제1305호</span>
+          <h1 class="mobile-hero-title">숲속 모험의 시작,<br>WOOD지역대</h1>
+          <p class="mobile-hero-desc">자연 속에서 함께 배우고 성장하는 스카우트 가족</p>
+          <button class="mobile-hero-btn" onclick="openModal('modal-join')">
+            <i class="fa-solid fa-pen-to-square"></i> 신입 대원 가입신청 하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Friendly Mascot Greeting Pill -->
+    <div class="mobile-quokka-bar">
+      <div class="mobile-quokka-avatar">
+        <img src="images/scout_salute.jpg" alt="스카우트 마스코트">
+      </div>
+      <div class="mobile-quokka-speech">
+        <b>"반가워요 모험가님! 🌲"</b><br>
+        아래 메뉴를 터치해 공지사항과 활동을 둘러보세요!
+      </div>
     </div>
 
-    <!-- Quick Node Guide Pills (Direct Inline Onclick) -->
-    <div class="node-quick-pills">
-      <button class="pill-node-btn" onclick="openModal('modal-about')"><i class="fa-solid fa-campground"></i> 1. 지역대 소개</button>
-      <button class="pill-node-btn pill-highlight" onclick="openModal('modal-activities')">
-        <i class="fa-solid fa-fire"></i> 2. 주요 활동 안내
-        <span class="global-new-dot" id="header-activity-new-dot" style="display:none;" title="신규 공지사항 있음"></span>
+    <!-- Main Navigation Title -->
+    <div class="mobile-section-header">
+      <h3 class="mobile-section-title"><i class="fa-solid fa-compass"></i> 빠른 메뉴 탐색</h3>
+      <button class="mobile-section-more-btn" onclick="openTopicBoard('all', '전체 공지사항')">
+        전체공지 <i class="fa-solid fa-chevron-right"></i>
       </button>
-      <button class="pill-node-btn" onclick="openModal('modal-join')"><i class="fa-solid fa-vest"></i> 3. 대원 모집</button>
-      <button class="pill-node-btn" onclick="openModal('modal-gallery')"><i class="fa-solid fa-images"></i> 4. 활동 갤러리</button>
-      <button class="pill-node-btn" onclick="openModal('modal-faq')"><i class="fa-solid fa-comments"></i> 5. FAQ & 문의</button>
     </div>
 
-    <div class="sound-controls">
-      <button id="admin-portal-btn" class="sound-btn admin-badge-btn" onclick="openAdminModal()" title="관리자 대시보드 열기">
-        <i class="fa-solid fa-user-shield"></i>
-        <span class="btn-text">관리자 모드</span>
+    <!-- 5 Big Thumb-Friendly Touch Cards -->
+    <div class="mobile-cards-grid">
+      
+      <!-- Card 1: 지역대 소개 -->
+      <div class="mobile-menu-card" onclick="openModal('modal-about')">
+        <div class="mobile-card-icon-box icon-box-tent">
+          <i class="fa-solid fa-campground"></i>
+        </div>
+        <div class="mobile-card-info">
+          <span class="mobile-card-tag tag-green">01. ABOUT</span>
+          <h4 class="mobile-card-title">지역대 소개</h4>
+          <p class="mobile-card-desc">설립 철학, 3대 핵심 가치 및 교육 이념</p>
+        </div>
+        <i class="fa-solid fa-chevron-right mobile-card-arrow"></i>
+      </div>
+
+      <!-- Card 2: 주요 활동 안내 & 공지 -->
+      <div class="mobile-menu-card" onclick="openModal('modal-activities')">
+        <div class="mobile-card-icon-box icon-box-fire">
+          <i class="fa-solid fa-fire-flame-curved"></i>
+        </div>
+        <div class="mobile-card-info">
+          <span class="mobile-card-tag tag-orange">02. ACTIVITIES & BOARD</span>
+          <h4 class="mobile-card-title">
+            주요 활동 안내 & 공지
+            <span class="mobile-new-tag" id="mobile-activity-new-tag" style="display:none;">🔥 NEW</span>
+          </h4>
+          <p class="mobile-card-desc">야영 캠프, 오리엔티어링, 기능 뱃지, 잼버리</p>
+        </div>
+        <i class="fa-solid fa-chevron-right mobile-card-arrow"></i>
+      </div>
+
+      <!-- Card 3: 대원 모집 & 신청 -->
+      <div class="mobile-menu-card" onclick="openModal('modal-join')">
+        <div class="mobile-card-icon-box icon-box-bag">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <div class="mobile-card-info">
+          <span class="mobile-card-tag tag-brown">03. JOIN US</span>
+          <h4 class="mobile-card-title">대원 모집 & 가입 신청</h4>
+          <p class="mobile-card-desc">초·중·고·대학생 대원 및 성인지도자 모집</p>
+        </div>
+        <i class="fa-solid fa-chevron-right mobile-card-arrow"></i>
+      </div>
+
+      <!-- Card 4: 활동 갤러리 -->
+      <div class="mobile-menu-card" onclick="openModal('modal-gallery')">
+        <div class="mobile-card-icon-box icon-box-gallery">
+          <i class="fa-solid fa-images"></i>
+        </div>
+        <div class="mobile-card-info">
+          <span class="mobile-card-tag tag-teal">04. PHOTO GALLERY</span>
+          <h4 class="mobile-card-title">활동 갤러리</h4>
+          <p class="mobile-card-desc">생생한 야영 활동 사진 및 앨범 뷰어</p>
+        </div>
+        <i class="fa-solid fa-chevron-right mobile-card-arrow"></i>
+      </div>
+
+      <!-- Card 5: FAQ & 문의 -->
+      <div class="mobile-menu-card" onclick="openModal('modal-faq')">
+        <div class="mobile-card-icon-box icon-box-faq">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <div class="mobile-card-info">
+          <span class="mobile-card-tag tag-yellow">05. FAQ & CONTACT</span>
+          <h4 class="mobile-card-title">자주 묻는 질문 & 카톡 문의</h4>
+          <p class="mobile-card-desc">준비물, 집회 장소 안내 및 1:1 카톡 상담</p>
+        </div>
+        <i class="fa-solid fa-chevron-right mobile-card-arrow"></i>
+      </div>
+
+    </div>
+
+    <!-- Recent Notices Widget Card on Mobile Home -->
+    <div class="mobile-notices-section">
+      <div class="mobile-notices-card">
+        <div class="tab-header-flex" style="margin-bottom: 8px;">
+          <h4 style="font-family: var(--font-family-accent); color: var(--color-brown); font-size: 1.05rem;">
+            <i class="fa-solid fa-bullhorn text-orange"></i> 최신 공지사항 소식
+          </h4>
+          <button class="wooden-mini-btn" onclick="openTopicBoard('all', '전체 공지사항')" style="padding: 4px 10px; font-size: 0.76rem;">
+            더보기 +
+          </button>
+        </div>
+        
+        <div id="mobile-home-notices-list">
+          <div style="text-align:center; padding: 14px 0; color: var(--text-muted); font-size: 0.85rem;">
+            <i class="fa-solid fa-spinner fa-spin"></i> 공지사항을 불러오는 중...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Footer -->
+    <footer class="mobile-footer">
+      <a href="/?mode=desktop" class="mobile-desktop-switch-btn">
+        <i class="fa-solid fa-display"></i> PC(데스크톱) 전체화면으로 보기
+      </a>
+      <p><b>한국스카우트 WOOD지역대</b></p>
+      <p>경기남부연맹 제1305호 단위스카우트</p>
+      <p style="margin-top: 6px; font-size: 0.72rem; opacity: 0.7;">© 2026 SCOUT WOOD. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Fixed Bottom App Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+      <button class="bottom-nav-item active" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-house"></i>
+        <span>홈</span>
       </button>
-      <button id="audio-toggle-btn" class="sound-btn" onclick="toggleBgm()" title="숲속 새소리 & 바람 소리 BGM 토글">
-        <i class="fa-solid fa-volume-xmark"></i>
-        <span class="btn-text" id="bgm-btn-text">숲속 sound</span>
+      <button class="bottom-nav-item" onclick="openTopicBoard('all', '전체 공지사항')">
+        <i class="fa-solid fa-scroll"></i>
+        <span>공지사항</span>
       </button>
-      <button id="sfx-toggle-btn" class="sound-btn active" onclick="toggleSfx()" title="효과음 토글">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-        <span class="btn-text" id="sfx-btn-text">효과음 On</span>
+      <button class="bottom-nav-item highlight-nav" onclick="openModal('modal-join')">
+        <i class="fa-solid fa-pen-nib"></i>
+        <span>가입신청</span>
       </button>
-    </div>
-  </header>
+      <button class="bottom-nav-item" onclick="openModal('modal-gallery')">
+        <i class="fa-solid fa-images"></i>
+        <span>갤러리</span>
+      </button>
+      <button class="bottom-nav-item" onclick="openModal('modal-faq')">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>문의하기</span>
+      </button>
+    </nav>
 
-  <!-- Full-Frame Main Visual Interactive Canvas Container -->
-  <main class="fullframe-canvas-container" id="canvas-container">
-    <!-- Main Background Illustration Layer -->
-    <div class="canvas-bg-layer" id="bg-layer">
-      <img src="images/scout_full_bg.jpg" alt="WOOD지역대 숲속 스카우트 메인 일러스트" class="full-bg-img" id="main-full-img">
-      <div class="canvas-ambient-lighting"></div>
-    </div>
-
-    <!-- Animated Particle Overlay -->
-    <div class="particles-overlay" id="particles-overlay"></div>
-
-    <!-- Interactive Visual Nodes Overlay Layer (Direct Inline Onclick) -->
-    <div class="visual-nodes-layer">
-
-      <!-- Node 1: 중앙 메인 삼각텐트 -->
-      <div class="interactive-node node-tent" id="node-tent" style="top: 50%; left: 43%;" onclick="openModal('modal-about')" role="button" aria-label="삼각 텐트 - WOOD지역대 소개">
-        <div class="node-hotspot-glow green-glow"></div>
-        <div class="node-illustration-box tent-box">
-          <i class="fa-solid fa-campground node-main-icon"></i>
-          <div class="node-tooltip">
-            <i class="fa-solid fa-campground"></i>
-            <span><b>삼각 텐트</b> | WOOD지역대 소개</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Node 2: 통나무 모닥불 -->
-      <div class="interactive-node node-campfire" id="node-campfire" style="top: 76%; left: 49%;" onclick="openModal('modal-activities')" role="button" aria-label="통나무 모닥불 - 주요 활동 안내">
-        <div class="node-hotspot-glow orange-glow"></div>
-        <div class="node-illustration-box campfire-box">
-          <i class="fa-solid fa-fire-flame-curved node-main-icon"></i>
-          <span class="node-floating-new-tag" id="node-campfire-new-tag" style="display:none;">🔥 NEW</span>
-          <div class="node-tooltip orange-tooltip">
-            <i class="fa-solid fa-fire"></i>
-            <span><b>통나무 모닥불</b> | 주요 활동 안내</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Node 3: 스카우트 배낭 -->
-      <div class="interactive-node node-backpack" id="node-backpack" style="top: 50%; left: 24%;" onclick="openModal('modal-join')" role="button" aria-label="스카우트 배낭 - 대원 모집 & 신청">
-        <div class="node-hotspot-glow brown-glow"></div>
-        <div class="node-illustration-box backpack-box">
-          <i class="fa-solid fa-bag-shopping node-main-icon"></i>
-          <div class="node-tooltip">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span><b>스카우트 배낭</b> | 모집 안내 & 가입 신청</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Node 4: 숲속 갤러리 표지판 -->
-      <div class="interactive-node node-signpost" id="node-signpost" style="top: 67%; left: 77%;" onclick="openModal('modal-gallery')" role="button" aria-label="숲속 표지판 - 활동 갤러리">
-        <div class="node-hotspot-glow green-glow"></div>
-        <div class="node-illustration-box signpost-box">
-          <i class="fa-solid fa-signs-post node-main-icon"></i>
-          <div class="node-tooltip">
-            <i class="fa-solid fa-images"></i>
-            <span><b>숲속 표지판</b> | 활동 갤러리</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Node 5: 나뭇잎 다람쥐 마스코트 -->
-      <div class="interactive-node node-mascot" id="node-mascot" style="top: 31%; left: 68%;" onclick="openModal('modal-faq')" role="button" aria-label="다람쥐 마스코트 - FAQ & 카톡 문의">
-        <div class="node-hotspot-glow yellow-glow"></div>
-        <div class="node-illustration-box mascot-box">
-          <i class="fa-solid fa-comments node-main-icon"></i>
-          <div class="node-tooltip yellow-tooltip">
-            <i class="fa-solid fa-comments"></i>
-            <span><b>다람쥐 마스코트</b> | FAQ & 카톡 문의</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Floating Quokka Guide Character -->
-    <div class="floating-quokka-guide" id="quokka-guide">
-      <div class="quokka-avatar">
-        <img src="images/scout_salute.jpg" alt="쿼카 가이드">
-      </div>
-      <div class="quokka-speech-box">
-        <p id="quokka-dialogue">"숲속 곳곳의 텐트, 모닥불, 배낭, 표지판, 다람쥐를 클릭해봐! 🌲✨"</p>
-      </div>
-    </div>
-  </main>
+  </div>
 
   <!-- ==================== PARCHMENT MODALS ==================== -->
 
@@ -213,7 +272,7 @@
           <span>SCOUT ACTIVITIES & BOARDS</span>
         </div>
         <h2>WOOD지역대 주요 활동 안내 🔥</h2>
-        <p class="subtitle-tag">각 주제 카드나 <b>[📜 게시판 입장]</b> 버튼을 누르면 실시간 공지사항 게시판으로 바로 이동합니다!</p>
+        <p class="subtitle-tag">각 활동 카드나 <b>[게시판 입장]</b> 버튼을 누르면 실시간 공지사항으로 이동합니다!</p>
 
         <div class="parchment-body-scroll">
           <div style="margin-bottom: 12px;">
@@ -920,6 +979,38 @@
     <span id="node-toast-msg">메시지 내용</span>
   </div>
 
+  <!-- Load Master Scripts -->
   <script src="app.js"></script>
+
+  <!-- Mobile Home Quick Notices Loader -->
+  <script>
+    async function loadMobileHomeNotices() {
+      const container = document.getElementById('mobile-home-notices-list');
+      if (!container) return;
+      try {
+        const res = await fetch('/api/notices');
+        const json = await res.json();
+        if (json.success && json.data && json.data.length > 0) {
+          const top3 = json.data.slice(0, 3);
+          container.innerHTML = top3.map(n => `
+            <div class="mobile-notice-item" onclick="openTopicBoard('${n.topic_id || 'all'}'); showNoticeDetail(${n.id});">
+              <div class="mobile-notice-meta">
+                <span class="notice-badge-pill ${n.is_important ? 'important-pill' : 'topic-pill'}" style="font-size:0.68rem; padding:1px 6px;">
+                  ${n.is_important ? '📢 중요' : (n.topic_name || '공지')}
+                </span>
+                <span><i class="fa-regular fa-clock"></i> ${(n.created_at || '').substring(0, 10)}</span>
+              </div>
+              <div class="mobile-notice-item-title">${n.title}</div>
+            </div>
+          `).join('');
+        } else {
+          container.innerHTML = '<div style="text-align:center; padding:10px 0; color:var(--text-muted); font-size:0.85rem;">등록된 공지사항이 없습니다.</div>';
+        }
+      } catch (e) {
+        container.innerHTML = '<div style="text-align:center; padding:10px 0; color:var(--text-muted); font-size:0.85rem;">공지사항을 가져올 수 없습니다.</div>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', loadMobileHomeNotices);
+  </script>
 </body>
 </html>
