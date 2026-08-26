@@ -49,6 +49,24 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static assets
 app.use('/uploads', express.static(uploadDir));
 app.use(express.static(__dirname));
+app.use(express.static(process.cwd()));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(process.cwd(), 'images')));
+
+// Explicit Root Route handler
+app.get('/', (req, res) => {
+  const possiblePaths = [
+    path.join(__dirname, 'index.html'),
+    path.join(process.cwd(), 'index.html'),
+    path.join(__dirname, '..', 'index.html')
+  ];
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      return res.sendFile(p);
+    }
+  }
+  res.sendFile(path.resolve('index.html'));
+});
 
 // Active sessions for admin
 const activeSessions = new Set(['dev-admin-token', 'wood-admin-session-active']);
