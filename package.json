@@ -1,0 +1,25 @@
+{
+  "name": "scout-wood",
+  "version": "1.0.0",
+  "description": "스카우트 WOOD지역대 인터랙티브 웹 & 관리자 풀스택 웹",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node -e \"console.log('Build completed for Vercel deployment')\""
+  },
+  "engines": {
+    "node": ">=20.x"
+  },
+  "keywords": [
+    "scout",
+    "wood",
+    "interactive"
+  ],
+  "author": "WOOD지역대",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "multer": "^2.2.0"
+  }
+}
