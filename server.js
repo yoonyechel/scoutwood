@@ -48,8 +48,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static assets
 app.use('/uploads', express.static(uploadDir));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(express.static(__dirname));
 app.use(express.static(process.cwd()));
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/images', express.static(path.join(process.cwd(), 'images')));
 

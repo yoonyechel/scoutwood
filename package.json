@@ -4,8 +4,7 @@
   "description": "스카우트 WOOD지역대 인터랙티브 웹 & 관리자 풀스택 웹",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "node -e \"console.log('Build completed for Vercel deployment')\""
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=20.x"
