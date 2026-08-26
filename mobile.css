@@ -509,28 +509,34 @@ html, body {
    Mobile-Optimized Parchment Modals Overrides
    ========================================================================== */
 .parchment-modal-backdrop {
-  position: fixed !important;
-  inset: 0 !important;
-  background: rgba(0, 0, 0, 0.7) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  z-index: 2000 !important;
-  display: flex !important;
-  align-items: flex-end !important; /* Bottom sheet style on phone */
-  justify-content: center !important;
-  padding: 0 !important;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end; /* Bottom sheet style on phone */
+  justify-content: center;
+  padding: 0;
+}
+
+/* Hidden state must always take strict priority! */
+.parchment-modal-backdrop.hidden,
+.hidden {
+  display: none !important;
 }
 
 .parchment-modal-card {
-  width: 100% !important;
-  max-width: 540px !important;
-  max-height: 92vh !important;
-  border-radius: 28px 28px 0 0 !important;
-  margin: 0 !important;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4) !important;
-  animation: slideUpModal 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  display: flex !important;
-  flex-direction: column !important;
+  width: 100%;
+  max-width: 540px;
+  max-height: 92vh;
+  border-radius: 28px 28px 0 0;
+  margin: 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+  animation: slideUpModal 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes slideUpModal {
@@ -539,39 +545,39 @@ html, body {
 }
 
 .parchment-close-btn {
-  top: 14px !important;
-  right: 16px !important;
-  width: 36px !important;
-  height: 36px !important;
-  font-size: 1.1rem !important;
-  background: #E8DDD0 !important;
-  color: var(--color-brown) !important;
+  top: 14px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+  background: #E8DDD0;
+  color: var(--color-brown);
 }
 
 .modal-parchment-content {
-  padding: 20px 18px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  max-height: 92vh !important;
-  overflow: hidden !important;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 92vh;
+  overflow: hidden;
 }
 
 .modal-parchment-content h2 {
-  font-size: 1.35rem !important;
-  margin-bottom: 4px !important;
+  font-size: 1.35rem;
+  margin-bottom: 4px;
 }
 
 .subtitle-tag {
-  font-size: 0.85rem !important;
-  margin-bottom: 12px !important;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
 }
 
 .parchment-body-scroll {
-  flex: 1 !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  padding-right: 4px !important;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
 }
 
 /* Prevent mobile iOS zoom on input */
@@ -580,106 +586,106 @@ input, select, textarea {
 }
 
 .three-pillars-grid {
-  grid-template-columns: 1fr !important;
-  gap: 10px !important;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .board-topic-tabs-bar {
-  display: flex !important;
-  overflow-x: auto !important;
-  gap: 6px !important;
-  padding-bottom: 8px !important;
-  scrollbar-width: none !important;
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding-bottom: 8px;
+  scrollbar-width: none;
 }
 
 .board-topic-tabs-bar::-webkit-scrollbar {
-  display: none !important;
+  display: none;
 }
 
 .board-topic-tab-btn {
-  flex-shrink: 0 !important;
-  padding: 7px 12px !important;
-  font-size: 0.82rem !important;
+  flex-shrink: 0;
+  padding: 7px 12px;
+  font-size: 0.82rem;
 }
 
 .board-top-action-bar {
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 10px !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .board-ctrl-btns {
-  width: 100% !important;
-  display: flex !important;
-  gap: 6px !important;
-  overflow-x: auto !important;
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
 }
 
 .board-ctrl-btns button {
-  flex: 1 !important;
-  font-size: 0.8rem !important;
-  padding: 6px 8px !important;
-  justify-content: center !important;
+  flex: 1;
+  font-size: 0.8rem;
+  padding: 6px 8px;
+  justify-content: center;
 }
 
 .admin-top-header {
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 8px !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .admin-header-actions {
-  width: 100% !important;
-  display: flex !important;
-  gap: 6px !important;
+  width: 100%;
+  display: flex;
+  gap: 6px;
 }
 
 .admin-nav-tabs {
-  display: flex !important;
-  overflow-x: auto !important;
-  gap: 6px !important;
-  padding-bottom: 8px !important;
-  scrollbar-width: none !important;
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding-bottom: 8px;
+  scrollbar-width: none;
 }
 
 .admin-nav-tabs::-webkit-scrollbar {
-  display: none !important;
+  display: none;
 }
 
 .admin-tab-btn {
-  flex-shrink: 0 !important;
-  padding: 8px 12px !important;
-  font-size: 0.82rem !important;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  font-size: 0.82rem;
 }
 
 .gallery-grid {
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 8px !important;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 }
 
 .gallery-filter-bar {
-  display: flex !important;
-  overflow-x: auto !important;
-  gap: 6px !important;
-  padding-bottom: 8px !important;
-  scrollbar-width: none !important;
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding-bottom: 8px;
+  scrollbar-width: none;
 }
 
 .gallery-filter-bar::-webkit-scrollbar {
-  display: none !important;
+  display: none;
 }
 
 .gallery-filter-btn {
-  flex-shrink: 0 !important;
-  padding: 6px 12px !important;
-  font-size: 0.82rem !important;
+  flex-shrink: 0;
+  padding: 6px 12px;
+  font-size: 0.82rem;
 }
 
 /* Lightbox Mobile Adjustments */
 .lightbox-card {
-  width: 95% !important;
-  max-width: 500px !important;
-  max-height: 85vh !important;
-  margin: auto !important;
-  border-radius: 20px !important;
+  width: 95%;
+  max-width: 500px;
+  max-height: 85vh;
+  margin: auto;
+  border-radius: 20px;
 }
