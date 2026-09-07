@@ -46,6 +46,23 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Mobile Detection & Redirection for Root Route '/' (Before express.static!)
+app.get('/', (req, res, next) => {
+  const ua = req.headers['user-agent'] || '';
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(ua);
+  const forceDesktop = req.query.mode === 'desktop';
+
+  if (isMobileUA && !forceDesktop) {
+    return res.redirect('/mobile.html');
+  }
+  next();
+});
+
+// Explicit Mobile Route handler (/m, /mobile)
+app.get(['/m', '/mobile'], (req, res) => {
+  res.redirect('/mobile.html');
+});
+
 // Serve static assets
 app.use('/uploads', express.static(uploadDir));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -55,38 +72,6 @@ app.use(express.static(process.cwd()));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/images', express.static(path.join(process.cwd(), 'images')));
-
-// Explicit Root Route handler
-app.get('/', (req, res) => {
-  const possiblePaths = [
-    path.join(__dirname, 'public', 'index.html'),
-    path.join(__dirname, 'index.html'),
-    path.join(process.cwd(), 'public', 'index.html'),
-    path.join(process.cwd(), 'index.html')
-  ];
-  for (const p of possiblePaths) {
-    if (fs.existsSync(p)) {
-      return res.sendFile(p);
-    }
-  }
-  res.sendFile(path.resolve('index.html'));
-});
-
-// Explicit Mobile Route handler (/m, /mobile, /mobile.html)
-app.get(['/m', '/mobile', '/mobile.html'], (req, res) => {
-  const possiblePaths = [
-    path.join(__dirname, 'public', 'mobile.html'),
-    path.join(__dirname, 'mobile.html'),
-    path.join(process.cwd(), 'public', 'mobile.html'),
-    path.join(process.cwd(), 'mobile.html')
-  ];
-  for (const p of possiblePaths) {
-    if (fs.existsSync(p)) {
-      return res.sendFile(p);
-    }
-  }
-  res.redirect('/mobile.html');
-});
 
 // Active sessions for admin
 const activeSessions = new Set(['dev-admin-token', 'wood-admin-session-active']);
