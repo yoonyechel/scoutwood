@@ -28,7 +28,7 @@ html, body {
 
 /* Mobile App Wrapper - 스마트폰 실물 가로 폭(약 7cm, 385px) 고정 및 중앙 정렬 */
 .mobile-app-wrapper {
-  width: 100% !important;
+  width: 385px !important;
   max-width: 385px !important;
   margin: 0 auto !important;
   padding: 0 !important;
@@ -38,7 +38,6 @@ html, body {
   position: relative;
   box-sizing: border-box !important;
   background-color: #1c2724;
-  box-shadow: 0 0 45px rgba(0, 0, 0, 0.6);
 }
 
 /* --- 2. Mobile App Header Bar (상단 바 - 좌우 꽉 찬 100% 너비) --- */
