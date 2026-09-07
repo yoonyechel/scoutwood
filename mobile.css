@@ -40,13 +40,7 @@ html, body {
   background-color: #1c2724;
 }
 
-@media (min-width: 769px) {
-  .mobile-app-wrapper {
-    max-width: 480px !important;
-    margin: 0 auto !important;
-    box-shadow: 0 0 45px rgba(0, 0, 0, 0.6);
-  }
-}
+
 
 /* --- 2. Mobile App Header Bar (상단 바 - 좌우 꽉 찬 100% 너비) --- */
 .mobile-header-bar {
@@ -127,10 +121,10 @@ html, body {
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
   border: 2px solid rgba(255, 255, 255, 0.2);
   background: #2D3E35;
-  height: 205px !important;
+  height: 235px !important;
   width: 100% !important;
   box-sizing: border-box !important;
 }
@@ -149,7 +143,7 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 13px 12px;
+  padding: 16px 14px;
   color: #FFF;
   box-sizing: border-box;
 }
@@ -159,26 +153,26 @@ html, body {
   background: rgba(255, 125, 69, 0.95);
   color: #FFF;
   font-family: var(--font-family-accent);
-  font-size: 0.78rem;
-  padding: 3px 8px;
+  font-size: 0.82rem;
+  padding: 4px 10px;
   border-radius: var(--radius-pill);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   box-shadow: 0 2px 8px rgba(255, 125, 69, 0.4);
 }
 
 .mobile-hero-title {
   font-family: var(--font-family-accent);
-  font-size: 1.5rem;
+  font-size: 1.65rem;
   line-height: 1.25;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .mobile-hero-desc {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   opacity: 0.94;
-  margin-bottom: 9px;
-  line-height: 1.35;
+  margin-bottom: 12px;
+  line-height: 1.4;
 }
 
 .mobile-hero-btn {
@@ -186,13 +180,13 @@ html, body {
   background: linear-gradient(135deg, #FF7D45, #E7602B);
   color: #FFF;
   font-family: var(--font-family-accent);
-  font-size: 0.92rem;
-  padding: 7px 15px;
+  font-size: 0.98rem;
+  padding: 9px 18px;
   border-radius: var(--radius-pill);
   border: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   box-shadow: 0 4px 14px rgba(231, 96, 43, 0.4);
   cursor: pointer;
 }
@@ -205,20 +199,20 @@ html, body {
 .mobile-quokka-bar {
   margin: 6px 8px;
   background: rgba(250, 245, 239, 0.98);
-  border-radius: 14px;
-  padding: 8px 10px;
+  border-radius: 16px;
+  padding: 11px 12px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   border: 1.5px solid #E6DCCD;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
   height: auto;
 }
 
 .mobile-quokka-avatar {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--color-orange);
@@ -232,8 +226,10 @@ html, body {
 }
 
 .mobile-quokka-speech {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--color-brown);
+  line-height: 1.42;
+}
   line-height: 1.35;
 }
 
@@ -276,25 +272,25 @@ html, body {
   border: none;
 }
 
-/* --- 4. Thumb-Friendly 5 Main Navigation Cards (글자 길이에 맞춰 딱 맞게 컴팩트 감싸기) --- */
+/* --- 4. Thumb-Friendly 5 Main Navigation Cards (화면 가득 시원하게 확대된 카드) --- */
 .mobile-cards-grid {
-  padding: 4px 8px;
+  padding: 6px 8px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 10px;
   box-sizing: border-box !important;
   width: 100% !important;
 }
 
 .mobile-menu-card {
   background: rgba(250, 245, 239, 0.98);
-  border-radius: 16px;
-  padding: 9px 12px;
+  border-radius: 18px;
+  padding: 13px 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  border: 1.5px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  gap: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
   cursor: pointer;
   position: relative;
   transition: transform 0.15s, box-shadow 0.15s;
@@ -303,7 +299,6 @@ html, body {
   width: 100% !important;
   max-width: 100% !important;
   height: auto !important;
-  min-height: unset !important;
 }
 
 .mobile-menu-card:active {
@@ -312,16 +307,16 @@ html, body {
 }
 
 .mobile-card-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.32rem;
+  font-size: 1.45rem;
   color: #FFF;
   flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
 }
 
 .icon-box-tent { background: linear-gradient(135deg, #4E6C50, #2E4730); }
@@ -340,11 +335,11 @@ html, body {
 
 .mobile-card-tag {
   font-family: var(--font-family-accent);
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   display: inline-block;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: var(--radius-pill);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   font-weight: bold;
   align-self: flex-start;
 }
@@ -357,19 +352,19 @@ html, body {
 
 .mobile-card-title {
   font-family: var(--font-family-accent);
-  font-size: 1.15rem;
+  font-size: 1.22rem;
   color: var(--color-brown);
-  margin: 0 0 2px 0;
+  margin: 0 0 3px 0;
   display: flex;
   align-items: center;
   gap: 6px;
-  line-height: 1.25;
+  line-height: 1.28;
 }
 
 .mobile-card-desc {
-  font-size: 0.86rem;
+  font-size: 0.92rem;
   color: #6E5C50;
-  line-height: 1.35;
+  line-height: 1.42;
   margin: 0;
   white-space: normal;
   word-break: keep-all;
@@ -378,7 +373,7 @@ html, body {
 
 .mobile-card-arrow {
   color: #B5A599;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   flex-shrink: 0;
   margin-left: 2px;
 }
@@ -404,24 +399,24 @@ html, body {
 
 /* --- 5. Mobile Recent Notices Card on Home --- */
 .mobile-notices-section {
-  padding: 5px 8px 12px 8px;
+  padding: 6px 8px 16px 8px;
   box-sizing: border-box !important;
   width: 100% !important;
 }
 
 .mobile-notices-card {
   background: rgba(250, 245, 239, 0.98);
-  border-radius: 16px;
-  padding: 12px 11px;
+  border-radius: 18px;
+  padding: 15px 12px;
   border: 1.5px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   box-sizing: border-box !important;
   width: 100% !important;
   height: auto !important;
 }
 
 .mobile-notice-item {
-  padding: 8px 0;
+  padding: 10px 0;
   border-bottom: 1px solid rgba(107, 79, 58, 0.12);
   display: flex;
   flex-direction: column;
@@ -442,15 +437,15 @@ html, body {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
 .mobile-notice-item-title {
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   color: var(--text-main);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.4;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
@@ -508,13 +503,7 @@ html, body {
   box-sizing: border-box !important;
 }
 
-@media (min-width: 769px) {
-  .mobile-bottom-nav {
-    max-width: 480px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-  }
-}
+
 
 .bottom-nav-item {
   display: flex;
@@ -607,11 +596,7 @@ html, body {
   background: #FAF3E0 !important;
 }
 
-@media (min-width: 769px) {
-  .parchment-modal-card {
-    max-width: 480px !important;
-  }
-}
+
 
 /* Override all wide desktop constraints in mobile sheet */
 .activities-card-wide,
