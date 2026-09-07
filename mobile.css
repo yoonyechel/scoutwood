@@ -26,11 +26,11 @@ html, body {
   display: none !important;
 }
 
-/* Mobile App Wrapper - 스마트폰 실물 가로 폭(약 7cm, 385px) 고정 및 중앙 정렬 */
+/* Mobile App Wrapper - 스마트폰 실물 화면에 100% 꽉 채워 양쪽 2.3cm 어두운 배경 여백 완전 제거 */
 .mobile-app-wrapper {
   width: 100% !important;
-  max-width: 385px !important;
-  margin: 0 auto !important;
+  max-width: 100% !important;
+  margin: 0 !important;
   padding: 0 !important;
   min-height: 100vh;
   display: flex;
@@ -38,7 +38,14 @@ html, body {
   position: relative;
   box-sizing: border-box !important;
   background-color: #1c2724;
-  box-shadow: 0 0 45px rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 769px) {
+  .mobile-app-wrapper {
+    max-width: 480px !important;
+    margin: 0 auto !important;
+    box-shadow: 0 0 45px rgba(0, 0, 0, 0.6);
+  }
 }
 
 /* --- 2. Mobile App Header Bar (상단 바 - 좌우 꽉 찬 100% 너비) --- */
@@ -478,12 +485,12 @@ html, body {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* --- 7. Fixed Bottom App Navigation Bar (약 7cm / 385px 폭 고정 및 중앙 정렬) --- */
+/* --- 7. Fixed Bottom App Navigation Bar (모바일 100% 꽉 찬 너비) --- */
 .mobile-bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  left: 0 !important;
+  right: 0 !important;
   z-index: 1000;
   background: rgba(250, 245, 239, 0.98);
   backdrop-filter: blur(20px);
@@ -496,9 +503,17 @@ html, body {
   height: 64px;
   padding: 5px 4px calc(5px + env(safe-area-inset-bottom));
   width: 100% !important;
-  max-width: 385px !important;
+  max-width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box !important;
+}
+
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    max-width: 480px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
 }
 
 .bottom-nav-item {
@@ -550,7 +565,7 @@ html, body {
 
 /* ==========================================================================
    8. Mobile-Optimized Parchment Modals Overrides
-   스마트폰 화면 폭(385px)에 맞춘 하단 시트로 여백 낭비 없이 쾌적하게 표시
+   스마트폰 화면 폭(100%)에 맞춘 하단 시트로 여백 낭비 없이 쾌적하게 표시
    ========================================================================== */
 .parchment-modal-backdrop {
   position: fixed !important;
@@ -577,7 +592,7 @@ html, body {
 
 .parchment-modal-card {
   width: 100% !important;
-  max-width: 385px !important;
+  max-width: 100% !important;
   max-height: 92vh !important;
   border-radius: 20px 20px 0 0 !important;
   border: 2.5px solid #6B4F3A !important;
@@ -590,6 +605,12 @@ html, body {
   flex-direction: column !important;
   box-sizing: border-box !important;
   background: #FAF3E0 !important;
+}
+
+@media (min-width: 769px) {
+  .parchment-modal-card {
+    max-width: 480px !important;
+  }
 }
 
 /* Override all wide desktop constraints in mobile sheet */
