@@ -18,7 +18,7 @@ const indexHtml = `<!DOCTYPE html>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260910_03">
 </head>
 <body>
 
@@ -877,7 +877,7 @@ const indexHtml = `<!DOCTYPE html>
     <span id="node-toast-msg">메시지 내용</span>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20260910_03"></script>
 </body>
 </html>`;
 

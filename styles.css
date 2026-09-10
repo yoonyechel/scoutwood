@@ -1936,34 +1936,43 @@ html, body {
     font-size: 0.78rem;
   }
 
+  /* 모바일 화면: 모든 모달을 바텀시트가 아닌 중앙~상단(중앙에서 위쪽)에 배치 */
   .parchment-modal-backdrop {
-    padding: 8px;
-  }
-
-  /* 게시판 팝업: 스마트폰/모바일 화면에서 중앙~상단(중앙에서 위쪽)에 배치 */
-  #modal-board.parchment-modal-backdrop {
+    display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding: clamp(20px, 5.5vh, 44px) 12px clamp(24px, 5vh, 40px) 12px;
+    padding: clamp(16px, 4.5vh, 36px) 12px clamp(24px, 5vh, 40px) 12px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-  }
-
-  #modal-board .parchment-modal-card {
-    border-radius: 24px;
-    border: 3.5px solid #6B4F3A;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
-    max-height: calc(100vh - clamp(44px, 11vh, 90px));
-    margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .parchment-modal-card {
     width: 100%;
     max-width: 100%;
     padding: 22px 16px 18px 16px;
-    max-height: 92vh;
+    max-height: calc(100vh - clamp(40px, 10vh, 84px));
     border-width: 4px;
-    border-radius: 20px;
+    border-radius: 24px;
+    margin: 0 auto;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+  }
+
+  /* 게시판 & 활동 모달 명시적 상단 여백 설정 */
+  #modal-board.parchment-modal-backdrop,
+  #modal-activities.parchment-modal-backdrop {
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(16px, 4.5vh, 36px) 12px clamp(24px, 5vh, 40px) 12px;
+  }
+
+  #modal-board .parchment-modal-card,
+  #modal-activities .parchment-modal-card {
+    border-radius: 24px;
+    border: 3.5px solid #6B4F3A;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+    max-height: calc(100vh - clamp(40px, 10vh, 84px));
+    margin: 0 auto;
   }
 
   .activities-card-wide,
