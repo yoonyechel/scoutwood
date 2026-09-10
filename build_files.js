@@ -264,6 +264,7 @@ window.goToBoardPage = function(pageNum) {
 };
 
 window.viewNoticeDetailById = async function(noticeId) {
+  openModal('modal-board');
   let notice = window.cachedNoticeMap[noticeId];
 
   try {
@@ -297,6 +298,10 @@ window.viewNoticeDetailById = async function(noticeId) {
   document.getElementById('board-list-view')?.classList.add('hidden');
   document.getElementById('board-write-view')?.classList.add('hidden');
   document.getElementById('board-detail-view')?.classList.remove('hidden');
+};
+
+window.showNoticeDetail = function(noticeId) {
+  window.viewNoticeDetailById(noticeId);
 };
 
 window.handleBoardModalNoticeSubmit = async function(e) {

@@ -1940,6 +1940,23 @@ html, body {
     padding: 8px;
   }
 
+  /* 게시판 팝업: 스마트폰/모바일 화면에서 중앙~상단(중앙에서 위쪽)에 배치 */
+  #modal-board.parchment-modal-backdrop {
+    align-items: flex-start;
+    justify-content: center;
+    padding: clamp(20px, 5.5vh, 44px) 12px clamp(24px, 5vh, 40px) 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #modal-board .parchment-modal-card {
+    border-radius: 24px;
+    border: 3.5px solid #6B4F3A;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+    max-height: calc(100vh - clamp(44px, 11vh, 90px));
+    margin: 0 auto;
+  }
+
   .parchment-modal-card {
     width: 100%;
     max-width: 100%;
@@ -1972,6 +1989,10 @@ html, body {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+  }
+
+  .board-title-block {
+    padding-right: 48px;
   }
 
   .board-ctrl-btns {

@@ -657,6 +657,40 @@ input, select, textarea {
    9. 📱 SMARTPHONE NOTICE BOARD ENHANCEMENTS (모바일 공지사항 게시판 맞춤 최적화)
    ========================================================================== */
 
+/* 게시판 팝업(#modal-board): 바텀시트가 아닌 화면 중앙에서 위쪽으로 안정감 있게 표시 */
+#modal-board.parchment-modal-backdrop {
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding: clamp(20px, 5.5vh, 44px) 12px clamp(24px, 5vh, 40px) 12px !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#modal-board .parchment-modal-card {
+  border-radius: 24px !important;
+  border: 3.5px solid #6B4F3A !important;
+  border-bottom: 3.5px solid #6B4F3A !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45), 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+  max-height: calc(100vh - clamp(44px, 11vh, 90px)) !important;
+  margin: 0 auto !important;
+  animation: boardModalPopCenter 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#modal-board .modal-parchment-content {
+  max-height: calc(100vh - clamp(44px, 11vh, 90px) - 44px) !important;
+}
+
+@keyframes boardModalPopCenter {
+  0% {
+    transform: translateY(18px) scale(0.96);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 /* Board Top Action Header on Mobile */
 .board-top-action-bar {
   flex-direction: column !important;
@@ -664,6 +698,10 @@ input, select, textarea {
   gap: 10px !important;
   margin-bottom: 12px !important;
   width: 100% !important;
+}
+
+.board-title-block {
+  padding-right: 48px !important; /* X 닫기 버튼과 겹침 방지 여백 확보 */
 }
 
 .board-title-block h2 {
