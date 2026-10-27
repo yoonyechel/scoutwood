@@ -73,6 +73,43 @@ app.get(['/m', '/mobile'], (req, res) => {
   res.redirect('/mobile.html');
 });
 
+// Dynamic Image Delivery for uploads (Support Serverless /tmp & In-DB base64 fallback)
+const serveUploadedImage = (req, res) => {
+  const { filename } = req.params;
+  const safeFilename = path.basename(filename);
+  const diskPath = path.join(uploadDir, safeFilename);
+
+  // 1. Try local disk
+  if (fs.existsSync(diskPath)) {
+    return res.sendFile(diskPath);
+  }
+
+  // 2. Fallback to database stored image_data (Base64)
+  try {
+    const photo = db.prepare(`
+      SELECT image_url, image_data FROM gallery 
+      WHERE image_url LIKE ? OR image_url LIKE ? 
+      ORDER BY id DESC LIMIT 1
+    `).get(`%${safeFilename}`, `%/uploads/${safeFilename}`);
+
+    if (photo && photo.image_data && photo.image_data.startsWith('data:')) {
+      const matches = photo.image_data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (matches && matches.length === 3) {
+        const mimeType = matches[1];
+        const buffer = Buffer.from(matches[2], 'base64');
+        res.setHeader('Content-Type', mimeType);
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        return res.send(buffer);
+      }
+    }
+  } catch (err) {}
+
+  res.status(404).json({ success: false, message: '이미지를 찾을 수 없습니다.' });
+};
+
+app.get('/api/uploads/:filename', serveUploadedImage);
+app.get('/uploads/:filename', serveUploadedImage);
+
 // Serve static assets
 app.use('/uploads', express.static(uploadDir));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -380,15 +417,27 @@ app.post('/api/gallery', requireAdmin, uploadSingleImage, (req, res) => {
     }
 
     const imageUrl = `/uploads/${req.file.filename}`;
+    let imageData = null;
+    try {
+      if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+        const fileBuffer = fs.readFileSync(req.file.path);
+        imageData = `data:${req.file.mimetype || 'image/jpeg'};base64,${fileBuffer.toString('base64')}`;
+      }
+    } catch (e) {}
+
+    // In serverless, use Data URL as primary image_url to eliminate Vercel 404s permanently
+    const finalStoredUrl = (isServerless && imageData) ? imageData : imageUrl;
+
     const stmt = db.prepare(`
-      INSERT INTO gallery (title, category, image_url, description, activity_date, created_at)
-      VALUES (?, ?, ?, ?, ?, datetime('now', 'localtime'))
+      INSERT INTO gallery (title, category, image_url, image_data, description, activity_date, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))
     `);
 
     const result = stmt.run(
       title.trim(),
       category?.trim() || '일반',
-      imageUrl,
+      finalStoredUrl,
+      imageData,
       description?.trim() || '',
       activity_date || new Date().toISOString().slice(0, 10)
     );
@@ -400,7 +449,7 @@ app.post('/api/gallery', requireAdmin, uploadSingleImage, (req, res) => {
         id: Number(result.lastInsertRowid),
         title: title.trim(),
         category: category?.trim() || '일반',
-        image_url: imageUrl,
+        image_url: finalStoredUrl,
         description: description?.trim() || '',
         activity_date: activity_date || new Date().toISOString().slice(0, 10)
       }
@@ -432,10 +481,21 @@ app.put('/api/gallery/:id', requireAdmin, uploadSingleImage, (req, res) => {
     }
 
     let finalImageUrl = existing.image_url;
+    let finalImageData = existing.image_data || null;
 
     // 새 사진 파일이 함께 첨부된 경우
     if (req.file) {
-      finalImageUrl = `/uploads/${req.file.filename}`;
+      let newImageData = null;
+      try {
+        if (req.file.path && fs.existsSync(req.file.path)) {
+          const fileBuffer = fs.readFileSync(req.file.path);
+          newImageData = `data:${req.file.mimetype || 'image/jpeg'};base64,${fileBuffer.toString('base64')}`;
+        }
+      } catch (e) {}
+
+      finalImageData = newImageData;
+      const uploadedUrl = `/uploads/${req.file.filename}`;
+      finalImageUrl = (isServerless && newImageData) ? newImageData : uploadedUrl;
 
       // 이전 이미지가 uploads 폴더에 있었다면 안전하게 삭제
       if (existing.image_url && existing.image_url.startsWith('/uploads/')) {
@@ -456,11 +516,11 @@ app.put('/api/gallery/:id', requireAdmin, uploadSingleImage, (req, res) => {
 
     const stmt = db.prepare(`
       UPDATE gallery
-      SET title = ?, category = ?, image_url = ?, description = ?, activity_date = ?
+      SET title = ?, category = ?, image_url = ?, image_data = ?, description = ?, activity_date = ?
       WHERE id = ?
     `);
 
-    stmt.run(updatedTitle, updatedCategory, finalImageUrl, updatedDesc, updatedDate, id);
+    stmt.run(updatedTitle, updatedCategory, finalImageUrl, finalImageData, updatedDesc, updatedDate, id);
 
     res.json({
       success: true,

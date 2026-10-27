@@ -72,11 +72,18 @@ function initDatabase() {
       title TEXT NOT NULL,
       category TEXT DEFAULT '일반',
       image_url TEXT NOT NULL,
+      image_data TEXT,
       description TEXT,
       activity_date TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  try {
+    db.exec(`ALTER TABLE gallery ADD COLUMN image_data TEXT`);
+  } catch (e) {
+    // Column already exists or error ignored
+  }
 
   // 3. Topics table
   db.exec(`

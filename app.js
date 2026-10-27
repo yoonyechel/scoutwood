@@ -681,6 +681,59 @@ window.deleteGalleryPhotoById = async function(id) {
   loadAdminGallery();
 };
 
+// Compress image before upload using Canvas to ensure fast upload and stay well under Vercel payload limits
+async function compressImageForUpload(file, maxWidth = 1280, maxHeight = 1280, quality = 0.82) {
+  return new Promise((resolve) => {
+    if (!file || !file.type.startsWith('image/')) {
+      return resolve(file);
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              resolve(compressedFile);
+            } else {
+              resolve(file);
+            }
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      img.onerror = () => resolve(file);
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+}
+
 window.handleAdminGalleryUpload = async function(e) {
   e.preventDefault();
   const title = document.getElementById('g-title')?.value.trim();
@@ -694,12 +747,15 @@ window.handleAdminGalleryUpload = async function(e) {
     return;
   }
 
+  showToast('⏳ 사진을 최적화하여 업로드하는 중입니다...');
+  const optimizedFile = await compressImageForUpload(file);
+
   const formData = new FormData();
   formData.append('title', title);
   formData.append('category', category);
   formData.append('activity_date', date);
   formData.append('description', desc);
-  formData.append('image', file);
+  formData.append('image', optimizedFile);
 
   try {
     const res = await fetch('/api/gallery', {
@@ -979,12 +1035,15 @@ window.handleGalleryUploadSubmit = async function(e) {
     return;
   }
 
+  showToast('⏳ 사진을 최적화하여 등록하는 중입니다...');
+  const optimizedFile = await compressImageForUpload(file);
+
   const formData = new FormData();
   formData.append('title', title);
   formData.append('category', category);
   formData.append('activity_date', date);
   formData.append('description', desc);
-  formData.append('image', file);
+  formData.append('image', optimizedFile);
 
   try {
     const res = await fetch('/api/gallery', {
