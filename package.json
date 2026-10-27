@@ -4,7 +4,8 @@
   "description": "스카우트 WOOD지역대 인터랙티브 웹 & 관리자 풀스택 웹",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
   },
   "engines": {
     "node": ">=20.x"

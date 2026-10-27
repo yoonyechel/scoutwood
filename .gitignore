@@ -18,3 +18,11 @@ yarn-error.log*
 # System files
 .DS_Store
 Thumbs.db
+
+# Database journal files
+data/*.db-shm
+data/*.db-wal
+
+# Uploads directory
+uploads/*
+!uploads/.gitkeep

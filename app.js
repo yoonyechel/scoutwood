@@ -713,12 +713,21 @@ window.handleAdminGalleryUpload = async function(e) {
       showToast('📸 새 활동 사진이 등록되었습니다!');
       document.getElementById('admin-gallery-form')?.reset();
       document.getElementById('file-preview-box')?.classList.add('hidden');
+      currentGalleryCategory = '전체';
+      document.querySelectorAll('.gallery-filter-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.includes('전체'));
+      });
       loadAdminGallery();
       loadAdminStats();
-      loadGallery(currentGalleryCategory);
+      loadGallery('전체');
       return;
+    } else {
+      showToast('❌ ' + (data.message || '사진 등록에 실패했습니다.'));
     }
-  } catch(err){}
+  } catch(err){
+    console.error('Gallery upload error:', err);
+    showToast('⚠️ 사진 등록 중 통신 오류가 발생했습니다.');
+  }
 };
 
 window.loadAdminNotices = async function() {
@@ -989,11 +998,22 @@ window.handleGalleryUploadSubmit = async function(e) {
       showToast('📸 새 활동 사진이 등록되었습니다!');
       document.getElementById('modal-gallery-upload-form')?.reset();
       document.getElementById('mg-file-preview-box')?.classList.add('hidden');
+      currentGalleryCategory = '전체';
+      document.querySelectorAll('.gallery-filter-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.includes('전체'));
+      });
       showGalleryMainView();
-      loadGallery(currentGalleryCategory);
+      loadGallery('전체');
+      loadAdminGallery();
+      loadAdminStats();
       return;
+    } else {
+      showToast('❌ ' + (data.message || '사진 등록에 실패했습니다.'));
     }
-  } catch(err){}
+  } catch(err){
+    console.error('Gallery submit error:', err);
+    showToast('⚠️ 사진 업로드 중 서버 통신 오류가 발생했습니다.');
+  }
 };
 
 async function loadGallery(category = '전체') {
@@ -1005,11 +1025,16 @@ async function loadGallery(category = '전체') {
     const res = await fetch(url);
     const data = await res.json();
 
-    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+    if (data.success && Array.isArray(data.data)) {
+      window.cachedGallery = data.data;
+      window.cachedGalleryMap = {};
+      data.data.forEach(p => { window.cachedGalleryMap[p.id] = p; });
       renderGalleryGrid(data.data);
       return;
     }
-  } catch(e){}
+  } catch(e){
+    console.warn('Backend gallery offline, fallback mock gallery:', e);
+  }
 
   renderGalleryGrid(getFallbackGallery(category));
 }
@@ -1354,10 +1379,10 @@ function getFallbackNotices() {
 
 function getFallbackGallery(cat) {
   const allPhotos = [
-    { id: 1, title: '🌲 가을 숲속 텐트 구축 실습', category: '캠프', image_url: 'images/scout_camp.jpg', activity_date: '2026-08-20', description: '우리 반 대원들과 함께 완성한 4인용 A형 텐트!' },
-    { id: 2, title: '🔥 즐거운 모닥불 캠프파이어', category: '캠프', image_url: 'images/scout_campfire.jpg', activity_date: '2026-08-18', description: '밤하늘 아래 마시멜로를 구우며 부르는 스카우트 연가' },
-    { id: 3, title: '🧭 북한산 숲속 오리엔티어링 레이스', category: '숲속탐사', image_url: 'images/scout_hiking.jpg', activity_date: '2026-08-15', description: '나침반과 지도로 미션 지점을 모두 찾았습니다!' },
-    { id: 4, title: '🏅 매듭법 1급 기능 뱃지 수여식', category: '기능뱃지', image_url: 'images/scout_badge.jpg', activity_date: '2026-08-10', description: '영예로운 1급 기능 뱃지를 획득한 멋진 대원들' }
+    { id: 1, title: '🌲 가을 숲속 텐트 구축 실습', category: '캠프', image_url: 'images/scout_activities.jpg', activity_date: '2026-08-20', description: '우리 반 대원들과 함께 완성한 4인용 A형 텐트!' },
+    { id: 2, title: '🔥 즐거운 모닥불 캠프파이어', category: '캠프', image_url: 'images/gallery_campfire.jpg', activity_date: '2026-08-18', description: '밤하늘 아래 마시멜로를 구우며 부르는 스카우트 연가' },
+    { id: 3, title: '🧭 북한산 숲속 오리엔티어링 레이스', category: '숲속탐사', image_url: 'images/gallery_hiking.jpg', activity_date: '2026-08-15', description: '나침반과 지도로 미션 지점을 모두 찾았습니다!' },
+    { id: 4, title: '🏅 매듭법 1급 기능 뱃지 수여식', category: '기능뱃지', image_url: 'images/scout_badges.jpg', activity_date: '2026-08-10', description: '영예로운 1급 기능 뱃지를 획득한 멋진 대원들' }
   ];
   if (cat && cat !== '전체') {
     return allPhotos.filter(p => p.category === cat);

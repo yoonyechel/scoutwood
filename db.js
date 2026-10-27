@@ -264,6 +264,12 @@ function createInMemoryDbAdapter() {
             if (trimmed.includes("status = 'pending'")) {
               return { count: store.members.filter(m => m.status === 'pending').length };
             }
+            if (trimmed.includes("status = 'approved'")) {
+              return { count: store.members.filter(m => m.status === 'approved').length };
+            }
+            if (trimmed.includes("status = 'rejected'")) {
+              return { count: store.members.filter(m => m.status === 'rejected').length };
+            }
             return { count: store.members.length };
           }
           if (trimmed.includes('FROM notices WHERE id = ?')) {
@@ -323,6 +329,31 @@ function createInMemoryDbAdapter() {
             };
             store.gallery.unshift(newPhoto);
             return { lastInsertRowid: newPhoto.id, changes: 1 };
+          }
+          if (trimmed.startsWith('UPDATE notices')) {
+            const [topic_id, title, author, content, is_important, id] = params;
+            const n = store.notices.find(x => x.id == id);
+            if (n) {
+              n.topic_id = topic_id;
+              n.title = title;
+              n.author = author;
+              n.content = content;
+              n.is_important = is_important;
+              n.updated_at = new Date().toISOString();
+            }
+            return { changes: n ? 1 : 0 };
+          }
+          if (trimmed.startsWith('UPDATE gallery')) {
+            const [title, category, image_url, description, activity_date, id] = params;
+            const g = store.gallery.find(x => x.id == id);
+            if (g) {
+              g.title = title;
+              g.category = category;
+              g.image_url = image_url;
+              g.description = description;
+              g.activity_date = activity_date;
+            }
+            return { changes: g ? 1 : 0 };
           }
           if (trimmed.startsWith('UPDATE members SET status = ? WHERE id = ?')) {
             const [status, id] = params;

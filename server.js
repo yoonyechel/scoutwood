@@ -41,6 +41,16 @@ const upload = multer({
   }
 });
 
+// Multer error handling wrapper middleware
+function uploadSingleImage(req, res, next) {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: err.message || '사진 업로드 중 오류가 발생했습니다.' });
+    }
+    next();
+  });
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -157,24 +167,25 @@ app.get('/api/admin/stats', requireAdmin, (req, res) => {
 app.get('/api/topics', (req, res) => {
   try {
     const topics = db.prepare('SELECT * FROM topics').all();
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const sevenDaysAgoLocal = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+    const sevenDaysAgoIso = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
     const result = topics.map(topic => {
       const stats = db.prepare(`
         SELECT 
           COUNT(*) as notice_count,
           MAX(created_at) as latest_created_at,
-          SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as recent_count
+          SUM(CASE WHEN replace(created_at, 'T', ' ') >= ? OR created_at >= ? THEN 1 ELSE 0 END) as recent_count
         FROM notices 
         WHERE topic_id = ?
-      `).get(sevenDaysAgo, topic.id);
+      `).get(sevenDaysAgoLocal, sevenDaysAgoIso, topic.id);
 
       return {
         ...topic,
-        notice_count: stats.notice_count || 0,
-        latest_created_at: stats.latest_created_at,
-        has_new: (stats.recent_count || 0) > 0,
-        recent_count: stats.recent_count || 0
+        notice_count: stats ? (stats.notice_count || 0) : 0,
+        latest_created_at: stats ? stats.latest_created_at : null,
+        has_new: stats ? ((stats.recent_count || 0) > 0) : false,
+        recent_count: stats ? (stats.recent_count || 0) : 0
       };
     });
 
@@ -335,15 +346,36 @@ app.get('/api/gallery', (req, res) => {
   }
 });
 
+// Get Single Gallery Photo
+app.get('/api/gallery/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const photo = db.prepare('SELECT * FROM gallery WHERE id = ?').get(id);
+    if (!photo) {
+      return res.status(404).json({ success: false, message: '사진을 찾을 수 없습니다.' });
+    }
+    res.json({ success: true, data: photo });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Upload Gallery Photo
-app.post('/api/gallery', requireAdmin, upload.single('image'), (req, res) => {
+app.post('/api/gallery', requireAdmin, uploadSingleImage, (req, res) => {
   try {
     const { title, category, description, activity_date } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ success: false, message: '사진 파일을 첨부해주세요.' });
     }
-    if (!title) {
+    if (!title || !title.trim()) {
+      // Remove uploaded file if title is missing
+      if (req.file) {
+        const filePath = path.join(uploadDir, req.file.filename);
+        if (fs.existsSync(filePath)) {
+          try { fs.unlinkSync(filePath); } catch (e) {}
+        }
+      }
       return res.status(400).json({ success: false, message: '사진 제목을 입력해주세요.' });
     }
 
@@ -366,11 +398,80 @@ app.post('/api/gallery', requireAdmin, upload.single('image'), (req, res) => {
       message: '사진이 성공적으로 갤러리에 등록되었습니다.',
       data: {
         id: Number(result.lastInsertRowid),
-        title,
-        category,
+        title: title.trim(),
+        category: category?.trim() || '일반',
         image_url: imageUrl,
-        description,
-        activity_date
+        description: description?.trim() || '',
+        activity_date: activity_date || new Date().toISOString().slice(0, 10)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update Gallery Photo (사진 정보 수정 및 사진 교체/업데이트)
+app.put('/api/gallery/:id', requireAdmin, uploadSingleImage, (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, category, description, activity_date } = req.body;
+
+    const existing = db.prepare('SELECT * FROM gallery WHERE id = ?').get(id);
+    if (!existing) {
+      if (req.file) {
+        const uploadedFilePath = path.join(uploadDir, req.file.filename);
+        if (fs.existsSync(uploadedFilePath)) {
+          try { fs.unlinkSync(uploadedFilePath); } catch (e) {}
+        }
+      }
+      return res.status(404).json({ success: false, message: '수정할 사진을 찾을 수 없습니다.' });
+    }
+
+    if (title !== undefined && !title.trim()) {
+      return res.status(400).json({ success: false, message: '사진 제목을 입력해주세요.' });
+    }
+
+    let finalImageUrl = existing.image_url;
+
+    // 새 사진 파일이 함께 첨부된 경우
+    if (req.file) {
+      finalImageUrl = `/uploads/${req.file.filename}`;
+
+      // 이전 이미지가 uploads 폴더에 있었다면 안전하게 삭제
+      if (existing.image_url && existing.image_url.startsWith('/uploads/')) {
+        const oldFilename = existing.image_url.replace('/uploads/', '');
+        const oldFilePath = path.join(uploadDir, oldFilename);
+        if (fs.existsSync(oldFilePath)) {
+          try {
+            fs.unlinkSync(oldFilePath);
+          } catch (e) {}
+        }
+      }
+    }
+
+    const updatedTitle = title !== undefined ? title.trim() : existing.title;
+    const updatedCategory = category !== undefined ? (category.trim() || '일반') : existing.category;
+    const updatedDesc = description !== undefined ? description.trim() : (existing.description || '');
+    const updatedDate = activity_date !== undefined ? activity_date : existing.activity_date;
+
+    const stmt = db.prepare(`
+      UPDATE gallery
+      SET title = ?, category = ?, image_url = ?, description = ?, activity_date = ?
+      WHERE id = ?
+    `);
+
+    stmt.run(updatedTitle, updatedCategory, finalImageUrl, updatedDesc, updatedDate, id);
+
+    res.json({
+      success: true,
+      message: '사진 정보가 성공적으로 수정되었습니다.',
+      data: {
+        id: Number(id),
+        title: updatedTitle,
+        category: updatedCategory,
+        image_url: finalImageUrl,
+        description: updatedDesc,
+        activity_date: updatedDate
       }
     });
   } catch (error) {
@@ -385,10 +486,13 @@ app.delete('/api/gallery/:id', requireAdmin, (req, res) => {
     const photo = db.prepare('SELECT image_url FROM gallery WHERE id = ?').get(id);
 
     if (photo) {
-      if (photo.image_url.startsWith('/uploads/')) {
-        const filePath = path.join(__dirname, photo.image_url);
+      if (photo.image_url && photo.image_url.startsWith('/uploads/')) {
+        const filename = photo.image_url.replace('/uploads/', '');
+        const filePath = path.join(uploadDir, filename);
         if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
+          try {
+            fs.unlinkSync(filePath);
+          } catch (e) {}
         }
       }
       db.prepare('DELETE FROM gallery WHERE id = ?').run(id);
@@ -500,8 +604,8 @@ app.delete('/api/members/:id', requireAdmin, (req, res) => {
 // Export app for Vercel Serverless Function & testing
 module.exports = app;
 
-// Start Server locally if not running in Vercel Serverless environment
-if (!process.env.VERCEL) {
+// Start Server locally if not running in Vercel Serverless environment and directly executed
+if (require.main === module && !process.env.VERCEL) {
   // Keep server process alive persistently
   setInterval(() => {}, 1000 * 60 * 60);
 
